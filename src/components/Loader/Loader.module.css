@@ -1,0 +1,27 @@
+.loaderContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* Занимает всю доступную высоту */
+  min-height: 100px;
+  padding: 24px;
+}
+
+/* Спиннер - адаптация к Tailwind */
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #e5e7eb; /* gray-200 */
+  border-top-color: #3b82f6; /* blue-500 */
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

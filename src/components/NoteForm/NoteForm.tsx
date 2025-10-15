@@ -28,7 +28,11 @@ const OrderSchema = Yup.object().shape({
     .required("Required"),
 });
 
-export default function NoteForm() {
+interface NoteFormProps {
+  onClose?: () => void;
+}
+
+export default function NoteForm({ onClose }: NoteFormProps) {
   const fieldId = useId();
   const handleSubmit = async (
     values: OrderFormValues,
@@ -93,9 +97,14 @@ export default function NoteForm() {
             </div>
 
             <div className={css.actions}>
-              <button type="button" className={css.cancelButton}>
+              <button
+                type="button"
+                onClick={onClose}
+                className={css.cancelButton}
+              >
                 Cancel
               </button>
+
               <button
                 type="submit"
                 className={css.submitButton}
