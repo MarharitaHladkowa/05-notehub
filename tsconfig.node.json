@@ -1,7 +1,12 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  // Конфигурация для Node/сборки должна быть изолирована
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "types": ["node"] // Добавляем типы для Node.js, если нужны
+  },
+  "include": ["vite.config.ts"] // Или другие файлы, используемые Node
 }
