@@ -78,7 +78,7 @@ export default function App() {
         )}
         <button
           onClick={openModal}
-          className="px-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition disabled:opacity-50 w-full md:w-auto"
+          className={css.button}
           aria-label="Створити нову нотатку"
         >
           + Створити нотатку

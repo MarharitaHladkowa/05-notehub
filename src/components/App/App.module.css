@@ -1,8 +1,9 @@
 .app {
-  width: 90%;
+  width: 100%;
   max-width: 1280px;
   margin: 0px auto;
-  padding: 0 16px 16px;
+  padding: 16px 16px;
+  box-sizing: border-box;
 }
 
 .toolbar {
@@ -13,6 +14,8 @@
   padding: 16px 0;
   background-color: #f8f9fa;
   border-bottom: 1px solid #dee2e6;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .button {
