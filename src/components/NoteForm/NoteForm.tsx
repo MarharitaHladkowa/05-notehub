@@ -3,6 +3,9 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import css from "./NoteForm.module.css";
 import type { FormikHelpers } from "formik";
+import { useMutation } from "@tanstack/react-query";
+import { createNote } from "../../Services/noteServices";
+import type { NewNote } from "../../types/note";
 
 interface OrderFormValues {
   title: string;
@@ -29,17 +32,26 @@ const OrderSchema = Yup.object().shape({
 });
 
 interface NoteFormProps {
-  onClose?: () => void;
+  onClose: () => void;
 }
 
 export default function NoteForm({ onClose }: NoteFormProps) {
   const fieldId = useId();
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (newNote: NewNote) => {
+      createNote(newNote);
+    },
+    onSuccess() {
+      onClose();
+    },
+    onError(error) {},
+  });
   const handleSubmit = async (
     values: OrderFormValues,
     actions: FormikHelpers<OrderFormValues>
   ) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log(values);
+    mutate(values);
     actions.resetForm();
   };
 

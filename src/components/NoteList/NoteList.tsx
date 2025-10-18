@@ -13,10 +13,10 @@ export default function NoteList({ notes }: NoteListProps) {
   }
 
   return (
-    <ul className={css.noteList}>
+    <ul className={css.list}>
       {" "}
       {notes.map((note) => (
-        <li key={note.id}>
+        <li key={note.id} className={css.listItem}>
           <h2 className={css.title}>{note.title}</h2>
           <p className={css.content}>{note.content}</p>
           <div className={css.footer}>

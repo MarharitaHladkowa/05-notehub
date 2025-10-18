@@ -1,26 +1,42 @@
 import { useEffect, type ReactNode } from "react";
+import { createPortal } from "react-dom"; // 1. Импортируем createPortal
+import css from "./Modal.module.css";
+
+// ------------------------------------------------------------------
+// Находим или создаем корневой элемент для портала вне основного DOM.
+// Это нужно, чтобы модальное окно всегда было поверх всего содержимого.
+// ------------------------------------------------------------------
+const modalRoot =
+  document.getElementById("modal-root") ||
+  (() => {
+    const div = document.createElement("div");
+    div.id = "modal-root";
+    document.body.appendChild(div);
+    return div;
+  })();
+// ------------------------------------------------------------------
 
 /**
  * Описывает пропсы для компонента модального окна.
  * @param isOpen Состояние открытия/закрытия модального окна.
  * @param onClose Функция, вызываемая для закрытия модального окна.
- * @param children Содержимое, отображаемое внутри модального окна.
+ * @param children Содержимое, отображаемое внутри модального окна (ReactNode - это любой элемент React).
  */
 export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  children: ReactNode; // Используем ReactNode для типизации содержимого
+  children: ReactNode; // Тип для дочерних элементов (текст, JSX, числа и т.д.)
 }
 
 /**
  * Универсальный компонент модального окна.
- * Обеспечивает центрирование, затемнение фона, и закрытие по Esc или клику вне контента.
+ * Обеспечивает рендеринг через портал в document.body.
  */
 export default function Modal({ isOpen, onClose, children }: ModalProps) {
   // Эффект для обработки закрытия по клавише ESC
   useEffect(() => {
     if (!isOpen) {
-      // Если модальное окно закрыто, не регистрируем обработчик
+      // Если модальное окно закрыто, обработчик не нужен
       return;
     }
 
@@ -33,7 +49,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
     // Регистрируем обработчик события клавиатуры
     window.addEventListener("keydown", handleEscape);
 
-    // Функция очистки: удаляем обработчик при размонтировании или изменении isOpen/onClose
+    // Функция очистки: удаляем обработчик при размонтировании
     return () => {
       window.removeEventListener("keydown", handleEscape);
     };
@@ -45,32 +61,32 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
 
   // Обработка закрытия при клике на фон (backdrop)
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Проверяем, что клик был именно по фону (а не по контенту внутри)
+    // Проверяем, что клик был именно по фону (target === currentTarget),
+    // а не по контенту внутри модального окна.
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
 
-  return (
-    // Фиксированный оверлей, занимает весь экран, z-index высокий
+  // ------------------------------------------------------------------
+  // 2. Возвращаем результат createPortal
+  // ------------------------------------------------------------------
+  return createPortal(
     <div
-      className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
+      className={css.backdrop}
       onClick={handleBackdropClick}
-      // Добавляем role="dialog" и aria-modal для доступности
       role="dialog"
       aria-modal="true"
     >
-      {/* Контейнер модального окна */}
       <div
-        className="bg-white p-8 rounded-xl shadow-2xl max-w-xl w-full transform 
-                           transition-all duration-300 ease-out scale-100 opacity-100 relative"
+        className={css.modal}
         // Остановка всплытия, чтобы клик внутри модального окна не закрывал его
         onClick={(e) => e.stopPropagation()}
       >
         {/* Кнопка закрытия (X) */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition p-2 rounded-full hover:bg-gray-100"
+          className={css.closeButton}
           aria-label="Закрыть модальное окно"
         >
           <svg
@@ -88,10 +104,9 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
             />
           </svg>
         </button>
-
-        {/* Основное содержимое, передаваемое через children */}
         {children}
       </div>
-    </div>
+    </div>,
+    modalRoot // DOM-элемент, куда будет рендериться этот JSX (за пределами App)
   );
 }

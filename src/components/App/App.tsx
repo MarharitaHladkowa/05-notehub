@@ -24,20 +24,12 @@ export default function App() {
   const closeModal = () => setIsModalOpen(false);
   // 3. useQuery теперь использует debouncedSearch
   const { data, isLoading, isError, error, isSuccess } = useQuery({
-    // queryKey: Запрос инициируется только при изменении page ИЛИ debouncedSearch
     queryKey: ["notes", page, debouncedSearch],
     queryFn: () => fetchNotes(debouncedSearch, page),
-    staleTime: 1000 * 60 * 5,
-    initialData: {
-      results: [],
-      total_pages: 1,
-      page: 1,
-      total_results: 0,
-    },
   });
-  // 5. Деструктуризація даних для рендерингу
-  const notes: Note[] = data?.results ?? [];
-  const totalPages: number = data?.total_pages ?? 0;
+
+  const notes: Note[] = data?.notes ?? [];
+  const totalPages: number = data?.totalPages ?? 0;
   useEffect(() => {
     // Показываем тост, если:
     // 1. Запрос успешно завершен (isSuccess === true)
