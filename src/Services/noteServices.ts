@@ -1,6 +1,5 @@
 import axios from "axios";
-import type { Note, NewNote, UpdatedNote } from "../types/note";
-import { Search } from "lucide-react";
+import type { Note, NewNote } from "../types/note";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 
