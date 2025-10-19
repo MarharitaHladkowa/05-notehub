@@ -46,7 +46,6 @@ export default function NoteForm({ onClose }: NoteFormProps) {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       onClose();
     },
-    onError(error) {},
   });
   const handleSubmit = async (
     values: OrderFormValues,
