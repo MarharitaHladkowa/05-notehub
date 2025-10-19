@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import css from "./NoteForm.module.css";
 import type { FormikHelpers } from "formik";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNote } from "../../Services/noteServices";
 import type { NewNote } from "../../types/note";
 
@@ -36,12 +36,14 @@ interface NoteFormProps {
 }
 
 export default function NoteForm({ onClose }: NoteFormProps) {
+  const queryClient = useQueryClient();
   const fieldId = useId();
   const { mutate, isPending } = useMutation({
     mutationFn: async (newNote: NewNote) => {
       createNote(newNote);
     },
     onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
       onClose();
     },
     onError(error) {},
@@ -120,9 +122,9 @@ export default function NoteForm({ onClose }: NoteFormProps) {
               <button
                 type="submit"
                 className={css.submitButton}
-                disabled={isSubmitting || !isValid || !dirty}
+                disabled={isSubmitting || !isValid || !dirty || isPending}
               >
-                {isSubmitting ? "Submitting..." : "Create note"}
+                {isSubmitting ? "Creating..." : "Create"}
               </button>
             </div>
           </Form>

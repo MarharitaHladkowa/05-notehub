@@ -1,38 +1,25 @@
-import { type FC } from "react";
+import React from "react";
 import css from "./SearchBox.module.css";
 
-/**
- * Описывает пропсы для компонента SearchBox.
- * @param value Текущее значение поиска (мгновенное значение из App.tsx).
- * @param onSubmit Функция, вызываемая при изменении поля ввода,
- * которая обновляет мгновенное состояние в App.tsx.
- */
-interface SearchBoxProps {
-  value: string;
-  onSubmit: (newSearch: string) => void;
+// ИСПРАВЛЕНИЕ 1: Добавляем пропс 'value' в интерфейс Props
+interface Props {
+  value: string; // Новое поле для привязки значения из App.tsx
+  onSearch: (search: string) => void;
 }
 
-/**
- * Компонент текстового поля для поиска.
- * Вся логика отложенной отправки (debounce) вынесена в App.tsx.
- * Этот компонент просто обеспечивает мгновенное обновление родительского состояния.
- */
-const SearchBox: FC<SearchBoxProps> = ({ value, onSubmit }) => {
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Мгновенно передаем новое значение родительскому компоненту (App.tsx)
-    onSubmit(event.target.value);
+export default function SearchBox({ value, onSearch }: Props) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onSearch(e.target.value);
   };
 
   return (
     <input
       className={css.input}
       type="text"
-      placeholder="Пошук нотаток..."
-      value={value}
+      placeholder="Search notes"
       onChange={handleChange}
-      aria-label="Пошук нотаток"
+      value={value}
+      aria-label="Search notes"
     />
   );
-};
-
-export default SearchBox;
+}

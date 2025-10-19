@@ -1,5 +1,6 @@
 import axios from "axios";
-import type { Note, NewNote } from "../types/note";
+import type { Note, NewNote, UpdatedNote } from "../types/note";
+import { Search } from "lucide-react";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -12,17 +13,21 @@ interface FetchNotesResponse {
   totalPages: number;
 }
 
-export const fetchNotes = async (searchText: string, page: number) => {
+export const fetchNotes = async (query: string, page: number) => {
   const response = await axios.get<FetchNotesResponse>("/notes", {
     params: {
-      ...(searchText !== "" && { search: searchText }),
-      page,
-      perPage: 12,
+      Search: query,
+      Page: page,
+      PageSize: 10,
     },
   });
   return response.data;
 };
 export const createNote = async (newNote: NewNote) => {
   const response = await axios.post<Note>("/notes", newNote);
+  return response.data;
+};
+export const deleteNote = async (noteId: string) => {
+  const response = await axios.delete<Note>(`/notes/${noteId}`);
   return response.data;
 };

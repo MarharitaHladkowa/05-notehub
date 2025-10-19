@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
-import { useDebounce } from "use-debounce"; // 1. Импорт useDebounce
+import { useDebounce } from "use-debounce";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNotes } from "../../Services/noteServices";
 import NoteList from "../NoteList/NoteList";
@@ -20,9 +20,8 @@ export default function App() {
   const [query, setQuery] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [debouncedSearch] = useDebounce(query, DEBOUNCE_DELAY);
-  const openModal = () => setIsModalOpen(true); // ВОТ ОНА
+  const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  // 3. useQuery теперь использует debouncedSearch
   const { data, isLoading, isError, error, isSuccess } = useQuery({
     queryKey: ["notes", page, debouncedSearch],
     queryFn: () => fetchNotes(debouncedSearch, page),
@@ -30,29 +29,29 @@ export default function App() {
 
   const notes: Note[] = data?.notes ?? [];
   const totalPages: number = data?.totalPages ?? 0;
+
   useEffect(() => {
-    // Показываем тост, если:
-    // 1. Запрос успешно завершен (isSuccess === true)
-    // 2. Есть активный поисковый запрос (query)
-    // 3. Результатов нет (notes.length === 0)
     if (isSuccess && query && notes.length === 0) {
       toast.error(`No notes found for your request: "${query}".`);
     }
-    // Зависимости: isSuccess (для реакции на завершение), notes.length (для проверки результата), query (для текста тоста)
   }, [isSuccess, notes.length, query]);
 
-  // 8. Обработчик смены страницы для ReactPaginate
   const handlePageClick = ({ selected }: { selected: number }) => {
-    // ReactPaginate передает 0-индексированный номер, API ожидает 1-индексированный
     const newPage = selected + 1;
     setPage(newPage);
-    // Прокручиваем страницу вверх для лучшего UX
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const handleSearch = (search: string) => {
+    setQuery(search);
+    setPage(1);
+  };
+
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox value={query} onSubmit={setQuery} />
+        <SearchBox value={query} onSearch={handleSearch} />
+
         {totalPages > 1 && (
           <ReactPaginate
             pageCount={totalPages}
@@ -87,10 +86,8 @@ export default function App() {
             }
           />
         )}
-        {/* Успішний рендеринг: показываем, если есть фильмы и нет загрузки/ошибки */}
         {!isLoading && !isError && (
           <>
-            {/* Сообщение о количестве найденных заметок */}
             {notes.length > 0 && (
               <div className={css.resultsMessage}>
                 <p className={css.resultsText}>

@@ -1,16 +1,25 @@
 // Компонент для отображения списка заметок
 
+import { deleteNote } from "../../Services/noteServices";
 import type { Note } from "../../types/note"; // Импорт типа Note
 import css from "./NoteList.module.css"; // Импорт стилей
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface NoteListProps {
   notes: Note[];
 }
 export default function NoteList({ notes }: NoteListProps) {
-  // Компонент не рендерится, если массив пуст
-  if (notes.length === 0) {
-    return null;
-  }
+  const queryClient = useQueryClient();
+  const { mutate: deleteNoteMutate } = useMutation({
+    mutationFn: (noteId: string) => deleteNote(noteId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
+  });
+
+  const handleDelete = (noteId: string) => {
+    deleteNoteMutate(noteId);
+  };
 
   return (
     <ul className={css.list}>
@@ -22,6 +31,7 @@ export default function NoteList({ notes }: NoteListProps) {
           <div className={css.footer}>
             <span className={css.tag}>{note.tag}</span>
             <button
+              type="button"
               className={css.button}
               onClick={() => handleDelete(note.id)}
             >
@@ -32,9 +42,4 @@ export default function NoteList({ notes }: NoteListProps) {
       ))}
     </ul>
   );
-  // Функция для удаления заметки
-  function handleDelete(id: string) {
-    // Логика удаления заметки по ID
-    console.log(`Delete note with id: ${id}`);
-  }
 }
