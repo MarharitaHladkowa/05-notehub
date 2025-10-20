@@ -69,7 +69,7 @@ export default function App() {
           className={css.button}
           aria-label="create note"
         >
-          + create not
+          + create note
         </button>
       </header>
       <NoteList notes={notes} />
