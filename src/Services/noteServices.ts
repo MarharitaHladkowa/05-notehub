@@ -15,9 +15,9 @@ interface FetchNotesResponse {
 export const fetchNotes = async (query: string, page: number) => {
   const response = await axios.get<FetchNotesResponse>("/notes", {
     params: {
-      Search: query,
-      Page: page,
-      PageSize: 10,
+      search: query,
+      page,
+      perPage: 12,
     },
   });
   return response.data;

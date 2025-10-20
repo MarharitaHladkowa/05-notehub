@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
-import { useDebounce } from "use-debounce";
+import { useDebouncedCallback } from "use-debounce";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNotes } from "../../Services/noteServices";
 import NoteList from "../NoteList/NoteList";
@@ -13,19 +13,24 @@ import css from "./App.module.css";
 import ReactPaginate from "react-paginate";
 import type { Note } from "../../types/note";
 
-const DEBOUNCE_DELAY = 500;
+/* const DEBOUNCE_DELAY = 500; */
 
 export default function App() {
   const [page, setPage] = useState<number>(1);
   const [query, setQuery] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [debouncedSearch] = useDebounce(query, DEBOUNCE_DELAY);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const { data, isLoading, isError, error, isSuccess } = useQuery({
-    queryKey: ["notes", page, debouncedSearch],
-    queryFn: () => fetchNotes(debouncedSearch, page),
+    queryKey: ["notes", page, query],
+    queryFn: () => fetchNotes(query, page),
   });
+  const handleChange = useDebouncedCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setQuery(e.target.value);
+    },
+    1000
+  );
 
   const notes: Note[] = data?.notes ?? [];
   const totalPages: number = data?.totalPages ?? 0;
@@ -42,15 +47,15 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleSearch = (search: string) => {
+  /*   const handleSearch = (search: string) => {
     setQuery(search);
     setPage(1);
-  };
+  }; */
 
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox value={query} onSearch={handleSearch} />
+        <SearchBox value={query} onSearch={handleChange} />
 
         {totalPages > 1 && (
           <ReactPaginate
