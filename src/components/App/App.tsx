@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { useDebouncedCallback } from "use-debounce";
 import { useQuery } from "@tanstack/react-query";
-import { fetchNotes } from "../../Services/noteServices";
+import { fetchNotes } from "../../services/noteServices";
 import NoteList from "../NoteList/NoteList";
 import SearchBox from "../SearchBox/SearchBox";
 import NoteForm from "../NoteForm/NoteForm";
@@ -46,12 +46,6 @@ export default function App() {
     setPage(newPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  /*   const handleSearch = (search: string) => {
-    setQuery(search);
-    setPage(1);
-  }; */
-
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
