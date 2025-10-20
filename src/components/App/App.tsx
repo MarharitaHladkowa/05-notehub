@@ -13,8 +13,6 @@ import css from "./App.module.css";
 import ReactPaginate from "react-paginate";
 import type { Note } from "../../types/note";
 
-/* const DEBOUNCE_DELAY = 500; */
-
 export default function App() {
   const [page, setPage] = useState<number>(1);
   const [query, setQuery] = useState<string>("");
@@ -71,7 +69,7 @@ export default function App() {
           className={css.button}
           aria-label="Створити нову нотатку"
         >
-          + Створити нотатку
+          + create note
         </button>
       </header>
       <NoteList notes={notes} />
