@@ -67,7 +67,7 @@ export default function App() {
         <button
           onClick={openModal}
           className={css.button}
-          aria-label="Створити нову нотатку"
+          aria-label="create note"
         >
           + create note
         </button>
@@ -90,7 +90,7 @@ export default function App() {
                 <p className={css.resultsText}>
                   Found {notes.length} notes.
                   <span className={css.resultsTextSecondary}>
-                    (Сторінка {page} з {totalPages})
+                    (Page {page} of {totalPages})
                   </span>
                 </p>
               </div>
