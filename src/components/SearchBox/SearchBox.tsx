@@ -1,9 +1,8 @@
 import React from "react";
 import css from "./SearchBox.module.css";
 
-// ИСПРАВЛЕНИЕ 1: Добавляем пропс 'value' в интерфейс Props
 interface Props {
-  value: string; // Новое поле для привязки значения из App.tsx
+  value: string;
   onSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
