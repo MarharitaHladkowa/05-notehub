@@ -4,7 +4,7 @@ import type { Note, NewNote } from "../types/note";
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 
 axios.defaults.headers.common.Authorization = `Bearer ${
-  import.meta.env.VITE_NOTEHUB_API_KEY
+  import.meta.env.VITE_NOTEHUB_TOKEN
 }`;
 
 interface FetchNotesResponse {

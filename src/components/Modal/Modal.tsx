@@ -1,11 +1,7 @@
 import { useEffect, type ReactNode } from "react";
-import { createPortal } from "react-dom"; // 1. Импортируем createPortal
+import { createPortal } from "react-dom";
 import css from "./Modal.module.css";
 
-// ------------------------------------------------------------------
-// Находим или создаем корневой элемент для портала вне основного DOM.
-// Это нужно, чтобы модальное окно всегда было поверх всего содержимого.
-// ------------------------------------------------------------------
 const modalRoot =
   document.getElementById("modal-root") ||
   (() => {
@@ -14,63 +10,51 @@ const modalRoot =
     document.body.appendChild(div);
     return div;
   })();
-// ------------------------------------------------------------------
 
-/**
- * Описывает пропсы для компонента модального окна.
- * @param isOpen Состояние открытия/закрытия модального окна.
- * @param onClose Функция, вызываемая для закрытия модального окна.
- * @param children Содержимое, отображаемое внутри модального окна (ReactNode - это любой элемент React).
- */
 export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode; // Тип для дочерних элементов (текст, JSX, числа и т.д.)
 }
 
-/**
- * Универсальный компонент модального окна.
- * Обеспечивает рендеринг через портал в document.body.
- */
 export default function Modal({ isOpen, onClose, children }: ModalProps) {
-  // Эффект для обработки закрытия по клавише ESC
   useEffect(() => {
     if (!isOpen) {
-      // Если модальное окно закрыто, обработчик не нужен
+      // Якщо вікно закрите, нічого не робимо
       return;
     }
 
+    // --- 1. Керування прокруткою ---
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    // --- 2. Обробник ESC ---
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
       }
     };
-
-    // Регистрируем обработчик события клавиатуры
     window.addEventListener("keydown", handleEscape);
 
-    // Функция очистки: удаляем обработчик при размонтировании
+    // --- 3. Функція очищення (CLEANUP) ---
     return () => {
+      // Відновлюємо прокрутку
+      document.body.style.overflow = originalOverflow;
+      // Видаляємо обробник клавіатури
       window.removeEventListener("keydown", handleEscape);
     };
-  }, [isOpen, onClose]); // Зависимости: перезапуск эффекта при изменении состояния открытия
+  }, [isOpen, onClose]);
+  // ------------------------------------------------------------------
 
   if (!isOpen) {
     return null;
   }
 
-  // Обработка закрытия при клике на фон (backdrop)
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Проверяем, что клик был именно по фону (target === currentTarget),
-    // а не по контенту внутри модального окна.
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
-
-  // ------------------------------------------------------------------
-  // 2. Возвращаем результат createPortal
-  // ------------------------------------------------------------------
   return createPortal(
     <div
       className={css.backdrop}

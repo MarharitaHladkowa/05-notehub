@@ -24,6 +24,7 @@ export default function App() {
   const { data, isLoading, isError, error, isSuccess } = useQuery({
     queryKey: ["notes", page, query],
     queryFn: () => fetchNotes(query, page),
+    placeholderData: (previousData) => previousData,
   });
   const handleChange = useDebouncedCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

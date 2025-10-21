@@ -9,7 +9,7 @@ import type { NewNote } from "../../types/note";
 
 interface OrderFormValues {
   title: string;
-  content: string;
+  content?: string;
   tag: "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
 }
 const initialValues: OrderFormValues = {
@@ -18,17 +18,11 @@ const initialValues: OrderFormValues = {
   tag: "Todo",
 };
 const OrderSchema = Yup.object().shape({
-  title: Yup.string()
-    .min(3, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  content: Yup.string()
-    .min(5, "Too Short!")
-    .max(500, "Too Long!")
-    .required("Required"),
-  tag: Yup.string()
-    .oneOf(["Todo", "Work", "Personal", "Meeting", "Shopping"])
-    .required("Required"),
+  title: Yup.string().max(50, "Too Long!"),
+
+  content: Yup.string().max(500, "Too Long!"),
+
+  tag: Yup.string().oneOf(["Todo", "Work", "Personal", "Meeting", "Shopping"]),
 });
 
 interface NoteFormProps {
@@ -40,7 +34,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
   const fieldId = useId();
   const { mutate, isPending } = useMutation({
     mutationFn: async (newNote: NewNote) => {
-      createNote(newNote);
+      return createNote(newNote);
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
