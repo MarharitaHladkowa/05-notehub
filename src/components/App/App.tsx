@@ -10,15 +10,17 @@ import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import Modal from "../Modal/Modal";
 import css from "./App.module.css";
-import ReactPaginate from "react-paginate";
 import type { Note } from "../../types/note";
+import Pagination from "../Pagination/Pagination";
 
 export default function App() {
-  const [page, setPage] = useState<number>(1);
   const [query, setQuery] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const [page, setPage] = useState<number>(1);
+
   const { data, isLoading, isError, error, isSuccess } = useQuery({
     queryKey: ["notes", page, query],
     queryFn: () => fetchNotes(query, page),
@@ -26,6 +28,7 @@ export default function App() {
   const handleChange = useDebouncedCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setQuery(e.target.value);
+      setPage(1);
     },
     1000
   );
@@ -38,30 +41,22 @@ export default function App() {
       toast.error(`No notes found for your request: "${query}".`);
     }
   }, [isSuccess, notes.length, query]);
-
   const handlePageClick = ({ selected }: { selected: number }) => {
     const newPage = selected + 1;
     setPage(newPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
         <SearchBox value={query} onSearch={handleChange} />
 
         {totalPages > 1 && (
-          <ReactPaginate
-            pageCount={totalPages}
-            pageRangeDisplayed={5}
-            marginPagesDisplayed={1}
+          <Pagination
+            totalPages={totalPages}
+            currentPage={page}
             onPageChange={handlePageClick}
-            forcePage={page - 1}
-            containerClassName={css.pagination}
-            activeClassName={css.active}
-            nextLabel="→"
-            previousLabel="←"
-            breakLabel="..."
-            renderOnZeroPageCount={null}
           />
         )}
         <button
