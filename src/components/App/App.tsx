@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { useDebouncedCallback } from "use-debounce";
 import { useQuery } from "@tanstack/react-query";
-import { fetchNotes } from "../../services/noteServices";
+import { fetchNotes } from "../../services/noteService";
 import NoteList from "../NoteList/NoteList";
 import SearchBox from "../SearchBox/SearchBox";
 import NoteForm from "../NoteForm/NoteForm";
