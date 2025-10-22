@@ -18,11 +18,17 @@ const initialValues: OrderFormValues = {
   tag: "Todo",
 };
 const OrderSchema = Yup.object().shape({
-  title: Yup.string().max(50, "Too Long!"),
+  title: Yup.string()
+    .max(50, "Too Long!")
+    .required("Назва є обов’язковою")
 
-  content: Yup.string().max(500, "Too Long!"),
+    .min(3, "Назва повинна містити принаймні 3 символи"),
 
-  tag: Yup.string().oneOf(["Todo", "Work", "Personal", "Meeting", "Shopping"]),
+  content: Yup.string().max(500, "Too Long!").nullable(),
+
+  tag: Yup.string()
+    .oneOf(["Todo", "Work", "Personal", "Meeting", "Shopping"])
+    .required("Тег є обов’язковим"),
 });
 
 interface NoteFormProps {
