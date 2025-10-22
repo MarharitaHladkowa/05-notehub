@@ -19,9 +19,7 @@ export default function SearchBox({ value = "", onSearch }: SearchBoxProps) {
       className={css.input}
       type="text"
       placeholder="Search notes"
-      onChange={onSearch}
-      // Використовуємо value замість defaultValue, щоб компонент був керованим (controlled)
-      // Якщо ви хочете використовувати defaultValue, тоді у App.tsx не передавайте value=""
+      onChange={(e) => onSearch(e.target.value)}
       value={value}
       aria-label="Search notes"
     />

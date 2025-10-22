@@ -26,13 +26,10 @@ export default function App() {
     queryFn: () => fetchNotes(query, page),
     placeholderData: (previousData) => previousData,
   });
-  const handleChange = useDebouncedCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setQuery(e.target.value);
-      setPage(1);
-    },
-    1000
-  );
+  const handleChange = useDebouncedCallback((value: string) => {
+    setQuery(value);
+    setPage(1);
+  }, 1000);
 
   const notes: Note[] = data?.notes ?? [];
   const totalPages: number = data?.totalPages ?? 0;
