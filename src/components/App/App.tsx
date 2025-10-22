@@ -29,7 +29,7 @@ export default function App() {
   const handleChange = useDebouncedCallback((value: string) => {
     setQuery(value);
     setPage(1);
-  }, 1000);
+  }, 300);
 
   const notes: Note[] = data?.notes ?? [];
   const totalPages: number = data?.totalPages ?? 0;
